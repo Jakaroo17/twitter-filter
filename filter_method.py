@@ -1,8 +1,9 @@
 
 from langdetect import detect
-import re 
+import re
+from os.path import join, dirname
 
-class filter:
+class Filter:
     _blocked_languages = []
     _blocked_words = []
     def set_blocked_languages(self,lang):
@@ -19,4 +20,3 @@ class filter:
     def filter_by_language(self,text):
         return detect(text) in self._blocked_languages
        
-

@@ -31,20 +31,23 @@ class TwitterObj:
         tweets = self._api.user_timeline(screen_name=name, 
                            count=count+2,
                            include_rts = False,
-                           # Necessary to keep full_text 
-                           # otherwise only the first 140 words are extracted
                            tweet_mode = 'extended'
                            )
         return tweets
     
-    def find_replies(self,tweet_id, name,items):
+    def find_replies(self,tweet_id,items):
        replies=[]
-       for tweet in tweepy.Cursor(self._api.search_tweets,q='to:'+name).items(items):
+       for tweet in tweepy.Cursor(self._api.search_tweets,q='to:'+self.username).items(items):
             if hasattr(tweet, 'in_reply_to_status_id_str'):
                 if (tweet.in_reply_to_status_id_str==tweet_id):
                     replies.append(tweet)
-       if(not replies): return "404, sorry"
+       if(not replies): return None
        return replies
+
+    def disable_eveything_from_user(self,reply_id,user_id):
+        self._client.block(user_id)
+        self._client.mute(user_id)
+        self._client.hide_reply(reply_id)
     
     def set_username(self,username):
         self.username = username
@@ -52,14 +55,6 @@ class TwitterObj:
       
 
 
-
-test = config_setup()
-test.create_twitter_obj()
-
-
-replies = test.find_replies('1553650742228971520','shouldhaveaduck',100)
-# for x in replies:
-#     print(x.user.screen_name,'- ',x.text)
 
 
 # # client.delete_tweet(id=1550908991513006083)
